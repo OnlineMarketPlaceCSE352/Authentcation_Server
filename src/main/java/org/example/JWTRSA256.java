@@ -4,6 +4,7 @@ import com.auth0.jwt.JWTCreator.Builder;
 import com.auth0.jwt.algorithms.Algorithm;
 import lombok.Getter;
 
+import java.io.Console;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -20,8 +21,8 @@ import java.util.HashMap;
 import java.util.UUID;
 @Getter
 public class JWTRSA256 {
-    String Password =System.getenv("KEYSTORE_PASSWORD");
-    String Path =System.getenv("KEYSTORE_PATH");
+    private  String Password =System.getenv("KEYSTORE_PASSWORD");
+    private String Path =System.getenv("KEYSTORE_PATH");
    private RSAPublicKey publicKey;
    private RSAPrivateKey privateKey;
 
@@ -33,6 +34,7 @@ public class JWTRSA256 {
             FileInputStream fis = new FileInputStream(Path);
             ks.load(fis,Password.toCharArray());
             privateKey =(RSAPrivateKey) ks.getKey("jwt-key",Password.toCharArray());
+            System.out.println(privateKey);
             publicKey=(RSAPublicKey) ks.getCertificate("jwt-key").getPublicKey();
         }
 

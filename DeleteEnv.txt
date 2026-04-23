@@ -1,0 +1,55 @@
+@echo off
+
+echo ===============================
+echo   FULL DELETE (DANGEROUS)
+echo ===============================
+
+set KEYSTORE_PATH=C:\secure\keys\keystore.p12
+set KEYSTORE_DIR=C:\secure\keys
+
+echo.
+echo  WARNING:
+echo This will DELETE:
+echo - Keystore file
+echo - JWT keys
+echo - Pepper secret
+echo - Environment variables
+echo.
+
+set /p CONFIRM=Type YES to continue: 
+
+if /I NOT "%CONFIRM%"=="YES" (
+    echo Operation cancelled.
+    pause
+    exit /b
+)
+
+echo.
+echo Removing environment variables...
+
+setx KEYSTORE_PATH ""
+setx KEYSTORE_PASSWORD ""
+
+echo.
+echo Deleting keystore file...
+
+if exist "%KEYSTORE_PATH%" (
+    del "%KEYSTORE_PATH%"
+    echo  Keystore deleted
+) else (
+    echo  Keystore not found
+)
+
+echo.
+echo Deleting directory...
+
+if exist "%KEYSTORE_DIR%" (
+    rmdir /s /q "%KEYSTORE_DIR%"
+    echo  Directory deleted
+)
+
+echo.
+echo  Cleanup completed successfully
+echo  Restart terminal or IDE
+
+pause

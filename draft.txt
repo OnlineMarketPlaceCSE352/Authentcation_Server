@@ -1,0 +1,6 @@
+===============================
+  JWT + Pepper KeyStore Setup
+===============================
+Enter keystore password: Strong@26
+Enter PEPPER value: A@sI!c
+Pepper password = Strong@26

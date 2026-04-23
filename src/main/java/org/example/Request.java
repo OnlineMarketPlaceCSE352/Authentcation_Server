@@ -1,29 +1,60 @@
 package org.example;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.Enums.Methods;
 import org.json.JSONObject;
-
+@Getter
+@Setter
 public class Request {
-    String Request;
-    JSONObject Body;
-    Methods method;
+   public String Request;
+   public JSONObject Body;
+   public Methods method;
+   public String EndPoint;
+   public JSONObject Header;
 
     Request(String s) {
         Request = s;
+        Body();
+        Method();
+        EndPoint();
+        Header();
 
     }
+    public void RequestHandler(){
+        Body();
+        Method();
+        EndPoint();
+        Header();
+    }
 
-    public JSONObject GetBody() {
+    private void Body() {
         int index = Request.indexOf("[CRLF]");
         String body = Request.substring(index + 6);
         Body = new JSONObject(body);
-        return Body;
+
     }
 
-    public  Methods GetMethod() {
+    private void Method() {
         int index = Request.indexOf("/");
-        String s = Request.substring(1,index);
+        String s = Request.substring(0,index-1);
         method = Methods.valueOf(s) ;
-        return method;
+
+    }
+    private void EndPoint()
+    {
+        int Startindex =Request.indexOf("/api");
+        int lastindex =Request.indexOf("{");
+        EndPoint =Request.substring(Startindex,lastindex-1);
+
+    }
+    private void Header()
+    {
+        int Startindex= Request.indexOf("{");
+        int Lastindex= Request.indexOf("}");
+        String header =Request.substring(Startindex,Lastindex+1);
+        Header =new JSONObject(header);
+
+
     }
 }
 

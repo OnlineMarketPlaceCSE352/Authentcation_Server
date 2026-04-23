@@ -1,36 +1,54 @@
 @echo off
 
 echo ===============================
-echo   Cleanup KeyStore Script
+echo   FULL CLEANUP (DANGEROUS)
 echo ===============================
 
-
 set KEYSTORE_PATH=C:\secure\keys\keystore.p12
-set KEYSTORE_DIR=C:\secure\keys
 
+echo.
+echo  WARNING: This will delete:
+echo - Keystore file
+echo - JWT keys
+echo - Pepper secret
+echo - Environment variables
+echo.
 
-if exist "%KEYSTORE_PATH%" (
-    echo Deleting keystore file...
-    del "%KEYSTORE_PATH%"
-) else (
-    echo Keystore file not found.
+set /p CONFIRM=Are you sure? (yes/no): 
+
+if /I NOT "%CONFIRM%"=="yes" (
+    echo Operation cancelled.
+    pause
+    exit /b
 )
 
-
-if exist "%KEYSTORE_DIR%" (
-    rmdir "%KEYSTORE_DIR%" 2>nul
-)
-
-
+echo.
 echo Removing environment variables...
 
-setx KEYSTORE_PASSWORD ""
 setx KEYSTORE_PATH ""
+setx KEYSTORE_PASSWORD ""
 
-REM === 5) إنهاء ===
 echo.
-echo ✅ Cleanup Completed!
-echo ⚠️ Please restart IntelliJ or terminal
+echo Deleting keystore file...
+
+if exist "%KEYSTORE_PATH%" (
+    del "%KEYSTORE_PATH%"
+    echo  Keystore deleted
+) else (
+    echo  Keystore not found
+)
+
 echo.
+echo Cleaning directory (optional)...
+
+set KEYSTORE_DIR=C:\secure\keys
+if exist "%KEYSTORE_DIR%" (
+    rmdir /s /q "%KEYSTORE_DIR%"
+    echo  Directory removed
+)
+
+echo.
+echo  FULL CLEANUP COMPLETED
+echo  Restart terminal/IDE
 
 pause
