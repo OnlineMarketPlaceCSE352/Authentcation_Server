@@ -36,8 +36,7 @@ public class SignUpHandler
                 response.Body.put("token", Token);}
             catch (ApiException ex)
             {
-                Response response =new Response();
-                response.stauts=ex.getStatus();
+                response.setStauts(ex.getStatus());
                 JSONObject body = new JSONObject();
                 body.put("message",ex.getMessage());
                 response.setBody(body);

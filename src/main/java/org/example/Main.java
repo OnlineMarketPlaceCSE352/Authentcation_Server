@@ -13,62 +13,68 @@ public class Main {
             JWTRSA256 keys = new JWTRSA256();
             try {
                 ServerSocket Server = new ServerSocket(8081);
-                Socket Client = Server.accept();
-                System.out.println("Accept new request");
+                while (true) {
+                    Socket Client = Server.accept();
+                    System.out.println("Accept new request");
 //            DataInputStream IS = new DataInputStream(Client.getInputStream());
 //            DataOutputStream OS = new DataOutputStream(Client.getOutputStream());
 
 
-                PrintWriter OS = new PrintWriter(Client.getOutputStream(), false);
+                    PrintWriter OS = new PrintWriter(Client.getOutputStream(), false);
 
-                BufferedReader IS = new BufferedReader(new InputStreamReader(Client.getInputStream()));
+                    BufferedReader IS = new BufferedReader(new InputStreamReader(Client.getInputStream()));
 
 
-                String message;
-                StringBuilder st = new StringBuilder();
-                boolean flag = false;
-                while (!((message = IS.readLine()).isEmpty()) || flag) {
-                    st.append(message);
-                    st.append("\n");
-                    if (message.contains("}"))
-                        break;
+                    String message;
+                    StringBuilder st = new StringBuilder();
+                    boolean flag = false;
+                    while ((message = IS.readLine()) != null && !message.isEmpty() || flag) {
+                        st.append(message);
+                        st.append("\n");
+                        if (message.contains("}"))
+                            break;
 
-                    if (message.contains("Content-Length:")) {
-                        int index = message.indexOf(" ");
-                        String length = message.substring(index + 1);
-                        if ((Integer.parseInt(length)) > 0) {
-                            flag = true;
+                        if (message.contains("Content-Length:")) {
+                            int index = message.indexOf(" ");
+                            String length = message.substring(index + 1);
+                            if ((Integer.parseInt(length)) > 0) {
+                                flag = true;
+
+                            }
 
                         }
 
                     }
+                    System.out.println("Accept new Message" + st);
 
-                }
-                System.out.println("Accept new Message" + st);
+                    if (st.toString().trim().isEmpty()) {
+                        System.out.println("Received empty ping. Ignoring.");
+                        Client.close();
+                        continue;
+                    }
 
-                Request request = new Request(st.toString());
+                    Request request = new Request(st.toString());
 //!Public key request
-                if (request.EndPoint.equals("/api/auth/key_req")) {
-                    System.out.println("Accept Public_Key_req");
+                    if (request.EndPoint.equals("/api/auth/key_req")) {
+                        System.out.println("Accept Public_Key_req");
                     PublicKeyHandler p = new PublicKeyHandler(request, keys);
                     p.Handle();
-                    System.out.println("Sending Public Key");
+                        System.out.println("Sending Public Key");
                     System.out.println(p.response.ToString());
                     OS.print(p.response.ToString());
-                    OS.flush();
-                    Client.close();
+                        OS.flush();
+                        Client.close();
+                    }
+                    //!Signup request
+                    else if (request.EndPoint.equals("/api/auth/register")) {
+                        System.out.println("Accepted user sign Up request");
+                        SignUpHandler s = new SignUpHandler(request, null);
+                        System.out.println(s.response.ToString());
+                        OS.print(s.response.ToString());
+                        OS.flush();
+                        Client.close();
+                    }
                 }
-                //!Signup request
-                else if (request.EndPoint.equals("/api/auth/register")) {
-                    System.out.println("Accepted user sign Up request");
-                    SignUpHandler s = new SignUpHandler(request, keys);
-                    System.out.println(s.response.ToString());
-                    OS.print(s.response.ToString());
-                    OS.flush();
-                    Client.close();
-                }
-
-
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

@@ -28,7 +28,7 @@ public class User {
     private Visa visa;
     private Roles role;
     private String address;
-    private long phoneNumber;
+    private Long phoneNumber;
 
     User(JSONObject object) throws ApiException {
         //*Parse name
@@ -145,7 +145,7 @@ public class User {
         Visa visa = new Visa();
 
         try {
-            visa.CardNo = object.getLong("cardNo");
+            visa.CardNo = object.getLong("cardNumber");
         } catch (JSONException e) {
             throw new ApiException(
                     Status.BAD_REQUEST,
@@ -187,7 +187,7 @@ public class User {
                     "Invalid Card Type");
         }
         try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/yyyy");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/yy");
 
 
             visa.CardExpiry = YearMonth.parse(object.getString("mm/yy"), formatter);
@@ -219,7 +219,7 @@ public class User {
                 //?missing password
                 throw new ApiException(Status.BAD_REQUEST, "Missing Password");
             }
-            if (p.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!]).{8,}$")) {
+            if (!p.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!]).{8,}$")) {
                 throw new ApiException(
                         //?Password Validation
                         Status.BAD_REQUEST,
