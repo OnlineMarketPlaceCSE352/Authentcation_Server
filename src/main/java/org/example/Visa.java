@@ -2,16 +2,18 @@ package org.example;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.example.Enums.CardType;
 
-import java.util.Date;
+import java.time.YearMonth;
+
 @Setter
 @Getter
 public class Visa {
 
-    int CardNo;
+    long CardNo;
     int   Cvv;
-    String   CardType;
-    Date CardExpiry;
+    CardType CardType;
+    YearMonth CardExpiry;
     int Password;
     String CardCarrier;
 }

@@ -3,6 +3,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTCreator.Builder;
 import com.auth0.jwt.algorithms.Algorithm;
 import lombok.Getter;
+import org.json.JSONObject;
 
 import java.io.Console;
 import java.io.FileInputStream;
@@ -47,7 +48,7 @@ public class JWTRSA256 {
 
     }
 
-    public String Genrate(HashMap<String,String> payload)
+    public String Genrate(User user)
     {
         Builder tokenBuilder= JWT.create();
         tokenBuilder.withClaim("jti", UUID.randomUUID().toString());
@@ -55,8 +56,9 @@ public class JWTRSA256 {
         tokenBuilder.withIssuedAt(c.getTime());
         c.add(Calendar.MINUTE, 30);
         tokenBuilder.withExpiresAt(c.getTime());
-        tokenBuilder.withClaim("token_type", "Bearer");
-        payload.entrySet().forEach(action->tokenBuilder.withClaim(action.getKey(), action.getValue()));
+        tokenBuilder.withClaim("id", user.getId());
+        tokenBuilder.withClaim("role", user.getRole().name());
+        tokenBuilder.withClaim("email", user.getEmail());
         return tokenBuilder.sign(Algorithm.RSA256(publicKey,privateKey));
     }
 }

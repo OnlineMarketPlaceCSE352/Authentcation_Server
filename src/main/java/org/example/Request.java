@@ -14,45 +14,60 @@ public class Request {
 
     Request(String s) {
         Request = s;
-        Body();
-        Method();
-        EndPoint();
+        RequestParser();
+
+    }
+
+    public void RequestParser(){
+
+        try{
+        String b = Request.substring(Request.indexOf("{"));
+        Body(b);
+
+        }
+        catch(StringIndexOutOfBoundsException e)
+        {
+            Body=null;
+        }
+        String M_E =Request.substring(0, Request.indexOf("\n"));
+        Method(M_E);
+        EndPoint(M_E);
         Header();
-
-    }
-    public void RequestHandler(){
-        Body();
-        Method();
-        EndPoint();
-        Header();
     }
 
-    private void Body() {
-        int index = Request.indexOf("[CRLF]");
-        String body = Request.substring(index + 6);
-        Body = new JSONObject(body);
+    private void Body(String b) {
 
+        Body =new JSONObject(b);
     }
 
-    private void Method() {
-        int index = Request.indexOf("/");
-        String s = Request.substring(0,index-1);
+    private void Method(String M_E) {
+        int index = Request.indexOf(" ");
+        String s = Request.substring(0,index);
         method = Methods.valueOf(s) ;
 
     }
-    private void EndPoint()
+    private void EndPoint(String M_E)
     {
-        int Startindex =Request.indexOf("/api");
-        int lastindex =Request.indexOf("{");
-        EndPoint =Request.substring(Startindex,lastindex-1);
+        int Startindex =Request.indexOf("/");
+        int lastindex =Request.indexOf(" ",Startindex);
+        EndPoint =Request.substring(Startindex,lastindex);
 
     }
     private void Header()
+    {try {
+        int Startindex = Request.indexOf("\n");
+        int Lastindex = Request.indexOf("{");
+        String header = Request.substring(Startindex + 1, Lastindex - 2);
+        String[] headers = header.split("\n");
+        Header = new JSONObject();
+        for (String s : headers) {
+            Header.put(s.substring(0, s.indexOf(":")), s.substring(s.indexOf(" ") + 1));
+        }
+    }
+    catch (StringIndexOutOfBoundsException ex)
     {
-        int Startindex= Request.indexOf("{");
-        int Lastindex= Request.indexOf("}");
-        String header =Request.substring(Startindex,Lastindex+1);
-        Header =new JSONObject(header);
+        Header=null;
+    }
 
 
     }

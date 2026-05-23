@@ -18,14 +18,14 @@ public class PublicKeyHandler {
    public void Handle() {
         if (request.method.equals(Methods.GET)) {
             JSONObject Body = new JSONObject();
-            Body.append("PublicKey", keys.getPublicKey());
+            Body.put("publicKey", keys.getPublicKey());
             response.stauts = Status.ACCEPTED;
             response.Body = Body;
 
 
         } else {
             JSONObject Body = new JSONObject();
-            Body.append("Message", "Expecting GET on these EndPoint");
+            Body.put("message", "Expecting GET on these EndPoint");
             response.stauts = Status.METHOD_NOT_ALLOWED;
             response.Body = Body;
 
