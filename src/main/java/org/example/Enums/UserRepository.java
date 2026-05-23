@@ -1,27 +1,138 @@
 package org.example.Enums;
 
-import org.example.ApiException;
+
+import org.example.User;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+
+import java.util.List;
+import java.util.Optional;
 
 public class UserRepository {
-    public static double getCreditById(String sellerId) throws ApiException
-    {
-        /// get user credit
-        ///  if user doesnot exist throw API Exception
-        return 9999999;
+    private static final class Holder {
+        private static final UserRepository instance = new UserRepository();
     }
 
-    public synchronized static void addCreditById(String sellerId,double amount) throws  ApiException
-    {
-        /// change  user credit
-        ///  if user doesnot exist throw API Exception
-
-
+    public static UserRepository getInstance() {
+        return Holder.instance;
     }
-    public synchronized static void chargeCreditById(String sellerId,double amount) throws  ApiException
-    {
-        /// change  user credit
-        ///  if user doesnot exist throw API Exception
 
+    private UserRepository() {}
 
+    public void save(User user) {
+        Transaction tx = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            tx = session.beginTransaction();
+            session.persist(user);
+            tx.commit();
+        } catch (Exception e) {
+            if (tx != null) tx.rollback();
+            throw new RuntimeException("Failed to save", e);
+        }
+    }
+
+    public void delete(String id) {
+        Transaction tx = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            tx = session.beginTransaction();
+            User user = session.get(User.class, id);
+            if (user != null) session.remove(user);
+            tx.commit();
+        } catch (Exception e) {
+            if (tx != null) tx.rollback();
+            throw new RuntimeException("Failed to delete", e);
+        }
+    }
+
+    public void update(User user) {
+        Transaction tx = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            tx = session.beginTransaction();
+            session.merge(user);
+            tx.commit();
+        } catch (Exception e) {
+            if (tx != null) tx.rollback();
+            throw new RuntimeException("Failed to update", e);
+        }
+    }
+
+    public Optional<User> findByEmail(String email) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            User user = session.createQuery("FROM User WHERE email = :email", User.class)
+                    .setParameter("email", email)
+                    .uniqueResult();
+            return Optional.ofNullable(user);
+        }
+    }
+
+    public Optional<User> findById(String id) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            return Optional.ofNullable(session.get(User.class, id));
+        }
+    }
+
+    public Optional<User> findUserByCardNo(long cardNo) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            User user = session.createQuery("FROM User u WHERE u.visa.cardNo = :cardNo", User.class)
+                    .setParameter("cardNo", cardNo)
+                    .uniqueResult();
+            return Optional.ofNullable(user);
+        }
+    }
+
+    public List<User> findByRole(Roles role) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            return session.createQuery("FROM User WHERE role = :role", User.class)
+                    .setParameter("role", role)
+                    .list();
+        }
+    }
+
+    public List<User> searchByName(String keyword) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            return session.createQuery("FROM User WHERE firstName LIKE :kw OR lastName LIKE :kw", User.class)
+                    .setParameter("kw", "%" + keyword + "%")
+                    .list();
+        }
+    }
+
+    public List<User> findAll() {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            return session.createQuery("FROM User", User.class).list();
+        }
+    }
+
+    public boolean existsByEmail(String email) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Long count = session.createQuery("SELECT COUNT(*) FROM User WHERE email = :email", Long.class)
+                    .setParameter("email", email)
+                    .uniqueResult();
+            return count != null && count > 0;
+        }
+    }
+
+    public Optional<Double> getCreditsById(String userId) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Double credits = session.createQuery("SELECT credits FROM User WHERE id = :id", Double.class)
+                    .setParameter("id", userId)
+                    .uniqueResult();
+            return Optional.ofNullable(credits);
+        }
+    }
+
+    public void updateCredits(String userId, double amount) {
+        Transaction tx = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            tx = session.beginTransaction();
+            User user = session.get(User.class, userId);
+            if (user != null) {
+                user.setCredits(user.getCredits() + amount);
+                session.merge(user);
+            }
+            tx.commit();
+        } catch (Exception e) {
+            if (tx != null) tx.rollback();
+            throw new RuntimeException("Failed to update credits", e);
+        }
     }
 }
