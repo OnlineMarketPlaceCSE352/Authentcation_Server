@@ -25,7 +25,7 @@ public class PaymentHandler {
             //! checking the Token
             try {
                 JWTRSA256.Authencator(request.getHeader().getString("token"), keys.getPublicKey().toString());
-                PaymentServices.Payment(request.getHeader().getString("token"),request.getBody().getString("userId"));
+                PaymentServices.Payment(request.getHeader().getString("token"),request.getBody().getString("userId"),request.getBody().getDouble("amount"));
             } catch (ApiException ex) {
                 response.setStauts(ex.getStatus());
                 JSONObject body = new JSONObject();
