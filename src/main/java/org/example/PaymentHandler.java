@@ -2,14 +2,16 @@ package org.example;
 
 import org.example.Enums.Methods;
 import org.example.Enums.Status;
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Base64;
 
 public class PaymentHandler {
     Request request;
     Response response;
     JWTRSA256 keys;
-    User Seller;
-    User Costumer;
+
 
     PaymentHandler(Request r, JWTRSA256 keys) {
         this.request = r;
@@ -24,8 +26,50 @@ public class PaymentHandler {
         if (request.method.equals(Methods.POST)) {
             //! checking the Token
             try {
-                JWTRSA256.Authencator(request.getHeader().getString("token"), keys.getPublicKey().toString());
-                PaymentServices.Payment(request.getHeader().getString("token"),request.getBody().getString("userId"),request.getBody().getDouble("amount"));
+
+                JWTRSA256.Authencator(request,  Base64.getEncoder()
+                        .encodeToString(keys.getPublicKey().getEncoded()));
+                String token;
+                String sellerId;
+                String userId;
+                double amount;
+                    token = request.getHeader().getString("token");
+                    String[] chunks = token.split("\\.");
+                    Base64.Decoder decoder = Base64.getUrlDecoder();
+
+                    String header = new String(decoder.decode(chunks[0]));
+                    String payload = new String(decoder.decode(chunks[1]));
+                    JSONObject obj = new JSONObject(payload);
+                    sellerId = obj.getString("id");
+
+                try{
+                    userId =request.getBody().getString("userId");
+
+                }
+
+                catch (JSONException E)
+                {
+                    throw new ApiException(Status.BAD_REQUEST, "Missing userId ");
+
+
+                }
+                try{
+                    amount =request.getBody().getDouble("amount");
+
+                }
+
+                catch (JSONException E)
+                {
+                    throw new ApiException(Status.BAD_REQUEST, "Missing amount ");
+
+
+                }
+
+
+               double c= PaymentServices.Payment(sellerId,userId,amount);
+                response.setStauts(Status.ACCEPTED);
+                response.Body.put("credit",c);
+
             } catch (ApiException ex) {
                 response.setStauts(ex.getStatus());
                 JSONObject body = new JSONObject();
