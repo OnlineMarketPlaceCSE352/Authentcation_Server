@@ -82,6 +82,13 @@ public class Main {
                     OS.print(s.response.ToString());
                     OS.flush();
                     Client.close();
+                } else if (request.EndPoint.equals("/api/auth/payment")) {
+                    System.out.println("Accepted user payment request");
+                    SignUpHandler s = new SignUpHandler(request, keys);
+                    System.out.println(s.response.ToString());
+                    OS.print(s.response.ToString());
+                    OS.flush();
+                    Client.close();
                 }
             }
         } catch (IOException e) {
