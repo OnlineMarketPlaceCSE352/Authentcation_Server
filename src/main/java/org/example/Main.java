@@ -89,6 +89,13 @@ public class Main {
                     OS.print(py.response.ToString());
                     OS.flush();
                     Client.close();
+                } else if (request.EndPoint.equals("/api/auth/login")) {
+                    System.out.println("Accepted user payment request");
+                    PaymentHandler py = new PaymentHandler(request, keys);
+                    System.out.println(py.response.ToString());
+                    OS.print(py.response.ToString());
+                    OS.flush();
+                    Client.close();
                 }
             }
         } catch (IOException e) {

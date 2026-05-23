@@ -7,7 +7,7 @@ public class UserRepository {
     {
         /// get user credit
         ///  if user doesnot exist throw API Exception
-        return 0;
+        return 9999999;
     }
 
     public synchronized static void addCreditById(String sellerId,double amount) throws  ApiException

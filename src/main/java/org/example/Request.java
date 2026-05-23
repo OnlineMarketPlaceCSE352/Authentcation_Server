@@ -56,7 +56,7 @@ public class Request {
     private void Header()
     {try {
         int Startindex = Request.indexOf("\n");
-        int Lastindex = Request.indexOf("{");
+        int Lastindex = Request.indexOf("\n\r");
         String header = Request.substring(Startindex + 1, Lastindex - 2);
         String[] headers = header.split("\n");
         Header = new JSONObject();

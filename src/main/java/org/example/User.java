@@ -4,16 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.example.Enums.CardType;
-import org.example.Enums.Roles;
-import org.example.Enums.Status;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.time.YearMonth;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.UUID;
+import org.example.Enums.Roles;
+
 
 @Setter
 @Getter
