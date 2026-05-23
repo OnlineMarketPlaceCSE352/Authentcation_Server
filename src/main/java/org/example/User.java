@@ -28,7 +28,7 @@ public class User {
     private Visa visa;
     private Roles role;
     private String address;
-    private Long phoneNumber;
+    private String phoneNumber;
 
     User(JSONObject object) throws ApiException {
         //*Parse name
@@ -98,7 +98,7 @@ public class User {
                     "Missing  address ");
         }
         //?addres validation
-        if (!add.matches("^[A-Za-z0-9\\\\s,.-]{5,100}$")) {
+        if (!add.matches("^[A-Za-z0-9\\s,.\\-/#]{5,100}$")) {
             throw new ApiException(
                     Status.BAD_REQUEST,
                     "User address invalid ");
@@ -228,10 +228,10 @@ public class User {
             }
             H = new Encryptor(p);
             return (H.Hashed);
-        }private Long phoneNumberParse(JSONObject object) throws ApiException {
-        Long pn;
+        }private String phoneNumberParse(JSONObject object) throws ApiException {
+        String pn;
         try {
-             pn = object.optLong("phoneNumber");
+             pn = object.getString("phoneNumber");
         } catch (JSONException ex) {
             //?Missing phoneNumber key
             throw new ApiException(
@@ -239,7 +239,7 @@ public class User {
                     "Missing  PhoneNumber ");
         }
         //?phoneNumber validation
-        if (!(Long.toString(pn).matches("^[A-Za-z0-9\\s,.-]{5,100}$"))) {
+        if (!(pn.matches("^[A-Za-z0-9\\s,.-]{5,100}$"))) {
             throw new ApiException(
                     Status.BAD_REQUEST,
                     "Missing user Phone Number ");
