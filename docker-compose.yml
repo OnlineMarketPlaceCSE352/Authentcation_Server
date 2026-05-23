@@ -1,0 +1,13 @@
+services:
+  auth-db:
+    image: mariadb
+    environment:
+      MARIADB_ROOT_PASSWORD: rootpass
+      MARIADB_DATABASE: auth_db
+    ports:
+      - "3309:3306"
+    volumes:
+      - auth-data:/var/lib/mysql
+
+volumes:
+  auth-data:

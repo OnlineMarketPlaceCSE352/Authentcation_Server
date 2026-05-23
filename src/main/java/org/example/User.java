@@ -1,5 +1,6 @@
 package org.example;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,17 +18,42 @@ import java.util.UUID;
 @Setter
 @Getter
 @AllArgsConstructor
+
+@Entity
 public class User {
-    private String Name;
-    private String firstName;
-    private String lastName;
+    @Id
+    @Column(name = "id", columnDefinition = "CHAR(36)")
     private String Id;
+
+    @Column(name = "name",nullable = false)
+    private String Name;
+
+    @Column(name = "firstName",nullable = false)
+    private String firstName;
+    @Column(name = "lastName",nullable = false)
+    private String lastName;
+
+    @Column(name = "credits", nullable = false, columnDefinition = "DECIMAL(18,2)")
     private double Credits;
+
+    @Column(name = "email",nullable = false)
     private String email;
+
+    @Column(name = "password",nullable = false)
     private String password;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "card_no")
     private Visa visa;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role")
     private Roles role;
+
+    @Column(name = "address", nullable = false)
     private String address;
+
+    @Column(name = "phoneNumber", nullable = false)
     private String phoneNumber;
 
     User(JSONObject object) throws ApiException {
@@ -75,7 +101,6 @@ public class User {
         Credits=0;
 
     }
-
 
     private Roles parseRole(JSONObject object) throws ApiException {
         try {
@@ -209,7 +234,7 @@ public class User {
 
     }
 
-        private String parsePassword (JSONObject object) throws ApiException {
+    private String parsePassword (JSONObject object) throws ApiException {
             String p;
             Encryptor H;
             //*Parsing the password
@@ -228,7 +253,8 @@ public class User {
             }
             H = new Encryptor(p);
             return (H.Hashed);
-        }private String phoneNumberParse(JSONObject object) throws ApiException {
+        }
+    private String phoneNumberParse(JSONObject object) throws ApiException {
         String pn;
         try {
              pn = object.getString("phoneNumber");
