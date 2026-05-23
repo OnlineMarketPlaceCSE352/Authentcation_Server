@@ -29,7 +29,7 @@ public class SignUpHandler
             //! taking the request body and convert to Map to throw to the method
 //            HashMap<String,String> payload =new Gson().fromJson(request.Body.toString(),HashMap.class);
             //!pass the user to the data base
-            try{user=new User(request.Body);
+            try{user=SignUpService.SignUp(request.Body);
                 Token =keys.Genrate(user);
                 response.stauts = Status.ACCEPTED;
                 response.Body = new JSONObject();

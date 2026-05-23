@@ -84,9 +84,9 @@ public class Main {
                     Client.close();
                 } else if (request.EndPoint.equals("/api/auth/payment")) {
                     System.out.println("Accepted user payment request");
-                    SignUpHandler s = new SignUpHandler(request, keys);
-                    System.out.println(s.response.ToString());
-                    OS.print(s.response.ToString());
+                    PaymentHandler py = new PaymentHandler(request, keys);
+                    System.out.println(py.response.ToString());
+                    OS.print(py.response.ToString());
                     OS.flush();
                     Client.close();
                 }
