@@ -53,6 +53,8 @@ public class PaymentHandler {
 
 
                 }
+                catch (NullPointerException ex)
+                {throw new ApiException(Status.BAD_REQUEST, "Missing Body ");}
                 try{
                     amount =request.getBody().getDouble("amount");
 

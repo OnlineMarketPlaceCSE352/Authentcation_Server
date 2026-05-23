@@ -4,6 +4,8 @@ import org.example.Enums.Methods;
 import org.example.Enums.Status;
 import org.json.JSONObject;
 
+import java.util.Base64;
+
 public class PublicKeyHandler {
     Request request;
     JWTRSA256 keys;
@@ -18,7 +20,8 @@ public class PublicKeyHandler {
    public void Handle() {
         if (request.method.equals(Methods.GET)) {
             JSONObject Body = new JSONObject();
-            Body.put("publicKey", keys.getPublicKey());
+            Body.put("publicKey", Base64.getEncoder()
+                    .encodeToString(keys.getPublicKey().getEncoded()));
             response.stauts = Status.ACCEPTED;
             response.Body = Body;
 

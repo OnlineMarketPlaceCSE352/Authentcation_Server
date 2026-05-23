@@ -92,7 +92,7 @@ public class Main {
                     OS.flush();
                     Client.close();
                 } else if (request.EndPoint.equals("/api/auth/login")) {
-                    System.out.println("Accepted user payment request");
+                    System.out.println("Accepted user login");
                     PaymentHandler py = new PaymentHandler(request, keys);
                     System.out.println(py.response.ToString());
                     OS.print(py.response.ToString());

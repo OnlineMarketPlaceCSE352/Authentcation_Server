@@ -1,6 +1,9 @@
-package org.example.Enums;
+package org.example;
 
 
+import org.example.Enums.HibernateUtil;
+import org.example.Enums.Roles;
+import org.example.Enums.Status;
 import org.example.User;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -27,7 +30,7 @@ public class UserRepository {
             tx.commit();
         } catch (Exception e) {
             if (tx != null) tx.rollback();
-            throw new RuntimeException("Failed to save", e);
+            throw new ApiException(Status.INTERNAL_SERVER_ERROR,"Failed to save user");
         }
     }
 
@@ -40,7 +43,7 @@ public class UserRepository {
             tx.commit();
         } catch (Exception e) {
             if (tx != null) tx.rollback();
-            throw new RuntimeException("Failed to delete", e);
+            throw new ApiException(Status.INTERNAL_SERVER_ERROR,"Failed to delete");
         }
     }
 
@@ -52,7 +55,7 @@ public class UserRepository {
             tx.commit();
         } catch (Exception e) {
             if (tx != null) tx.rollback();
-            throw new RuntimeException("Failed to update", e);
+            throw new ApiException(Status.INTERNAL_SERVER_ERROR,"Failed to update");
         }
     }
 
@@ -132,7 +135,7 @@ public class UserRepository {
             tx.commit();
         } catch (Exception e) {
             if (tx != null) tx.rollback();
-            throw new RuntimeException("Failed to update credits", e);
+            throw new ApiException(Status.INTERNAL_SERVER_ERROR,"Failed to update credits");
         }
     }
 }
