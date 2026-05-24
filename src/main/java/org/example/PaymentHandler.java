@@ -40,10 +40,10 @@ public class PaymentHandler {
                     String header = new String(decoder.decode(chunks[0]));
                     String payload = new String(decoder.decode(chunks[1]));
                     JSONObject obj = new JSONObject(payload);
-                    sellerId = obj.getString("id");
+                    userId = obj.getString("id");
 
                 try{
-                    userId =request.getBody().getString("userId");
+                    sellerId =request.getBody().getString("userId");
 
                 }
 

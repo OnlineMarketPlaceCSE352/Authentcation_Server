@@ -23,31 +23,35 @@ public class LoginHandler {
 
         if (request.method.equals(Methods.POST)) {
             //!trying fetch the user
-            String userEmail;
-            String password;
-            try{
-                userEmail =request.getBody().getString("userId");
 
-            }
+            try {String userEmail;
+                String password;
+                try{
+                    userEmail =request.getBody().getString("email");
 
-            catch (JSONException E)
-            {
-                throw new ApiException(Status.BAD_REQUEST, "Missing userEmail ");
+                }
 
-
-            }            try{
-                password =request.getBody().getString("password");
-
-            }
-
-            catch (JSONException E)
-            {
-                throw new ApiException(Status.BAD_REQUEST, "Missing userpassword ");
+                catch (JSONException E)
+                {
+                    throw new ApiException(Status.BAD_REQUEST, "Missing userEmail ");
 
 
-            }
-            try {
-                LoginServices.Login(userEmail,password);
+                }            try{
+                    password =request.getBody().getString("password");
+
+                }
+
+                catch (JSONException E)
+                {
+                    throw new ApiException(Status.BAD_REQUEST, "Missing userpassword ");
+
+
+                }
+                User user = LoginServices.Login(userEmail,password);
+                JWTRSA256 genrator = new JWTRSA256();
+                String token =genrator.Genrate(user);
+                response.Body.put("token",token);
+                response.setStauts(Status.OK);
 
 
             } catch (ApiException ex) {
@@ -62,7 +66,7 @@ public class LoginHandler {
 
         } else {
             JSONObject Body = new JSONObject();
-            Body.put("message", "Expecting GET on these EndPoint");
+            Body.put("message", "Expecting POST on these EndPoint");
             response.stauts = Status.METHOD_NOT_ALLOWED;
             response.Body = Body;
 

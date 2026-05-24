@@ -1,6 +1,6 @@
 package org.example;
 
-import org.example.Enums.UserRepository;
+import org.example.UserRepository;
 import org.example.Enums.VisaRepository;
 
 import java.io.BufferedReader;
@@ -93,7 +93,7 @@ public class Main {
                     Client.close();
                 } else if (request.EndPoint.equals("/api/auth/login")) {
                     System.out.println("Accepted user login");
-                    PaymentHandler py = new PaymentHandler(request, keys);
+                    LoginHandler py = new LoginHandler(request, keys);
                     System.out.println(py.response.ToString());
                     OS.print(py.response.ToString());
                     OS.flush();

@@ -13,6 +13,7 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableEntryException;
 import java.security.cert.CertificateException;
+import java.util.Base64;
 import java.util.UUID;
 
 public class Encryptor {
@@ -20,7 +21,7 @@ public class Encryptor {
     @Setter
 
     public String Hashed ;
-    private String Pepper;
+    private static String Pepper;
 
     private KeyStore ks ;
     private String Key_Password =System.getenv("KEYSTORE_PASSWORD");
@@ -28,7 +29,7 @@ public class Encryptor {
 
     public Encryptor(String password) {
 
-      GetPepper();
+
        Hashed = BCrypt.hashpw(password+Pepper,BCrypt.gensalt(12));
     }
     public String Encrypt(String password)
@@ -42,35 +43,50 @@ public class Encryptor {
         return BCrypt.checkpw(password+Pepper,this.Hashed);
 
     }
-
-    private void GetPepper()
+    public static boolean Check2Pass(String plainPassword,String hashedPassword)
     {
-        try {
-            //open the folder
-            ks = KeyStore.getInstance("PKCS12");
-            //Create InputStream
-            FileInputStream fis = new FileInputStream(Path);
-            //Load content from the file
-            ks.load(fis,Key_Password.toCharArray());
-            KeyStore.Entry entry = ks.getEntry("pepper",new KeyStore.PasswordProtection(Key_Password.toCharArray()));
-            KeyStore.SecretKeyEntry secretKeyEntry=(KeyStore.SecretKeyEntry) entry;
-            Pepper=new String(secretKeyEntry.getSecretKey().getEncoded());
+        return BCrypt.checkpw(plainPassword+Pepper,hashedPassword);
+    }
 
 
+
+    static {
+        LoadPepper();
+        if (Pepper == null) {
+            throw new RuntimeException("Pepper not loaded");
         }
-        catch (KeyStoreException e)
-        {
-            System.out.println(e.getMessage());
-        } catch (FileNotFoundException e) {
-            System.out.println(e.getMessage());
-        } catch (UnrecoverableEntryException e) {
-            System.out.println(e.getMessage());
-        } catch (CertificateException e) {
-            System.out.println(e.getMessage());
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        } catch (NoSuchAlgorithmException e) {
-            System.out.println(e.getMessage());
+    }
+
+    private static void LoadPepper() {
+        try {
+            KeyStore ks = KeyStore.getInstance("PKCS12");
+
+            FileInputStream fis =
+                    new FileInputStream(System.getenv("KEYSTORE_PATH"));
+
+            String keyPassword = System.getenv("KEYSTORE_PASSWORD");
+
+            ks.load(fis, keyPassword.toCharArray());
+
+            KeyStore.Entry entry =
+                    ks.getEntry(
+                            "pepper",
+                            new KeyStore.PasswordProtection(
+                                    keyPassword.toCharArray()
+                            )
+                    );
+
+            KeyStore.SecretKeyEntry secretKeyEntry =
+                    (KeyStore.SecretKeyEntry) entry;
+
+
+            Pepper = Base64.getEncoder()
+                    .encodeToString(
+                            secretKeyEntry.getSecretKey().getEncoded()
+                    );
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

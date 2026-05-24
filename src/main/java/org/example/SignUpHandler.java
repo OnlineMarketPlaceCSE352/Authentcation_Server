@@ -13,6 +13,7 @@ public class SignUpHandler
     Response response;
     JWTRSA256 keys;
     User user;
+    UserRepository userRepository=UserRepository.getInstance() ;
     SignUpHandler(Request r,JWTRSA256 keys)
     {
         this.request=r;
@@ -30,6 +31,7 @@ public class SignUpHandler
 //            HashMap<String,String> payload =new Gson().fromJson(request.Body.toString(),HashMap.class);
             //!pass the user to the data base
             try{user=SignUpService.SignUp(request.Body);
+            userRepository.save(user);
                 Token =keys.Genrate(user);
                 response.stauts = Status.ACCEPTED;
                 response.Body = new JSONObject();

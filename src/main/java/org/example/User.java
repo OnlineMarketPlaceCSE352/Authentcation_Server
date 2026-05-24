@@ -17,11 +17,11 @@ import org.example.Enums.Roles;
 @NoArgsConstructor
 public class User {
     @Id
-    @Column(name = "id", columnDefinition = "CHAR(36)")
-    private String Id;
+    @Column(name = "id", columnDefinition = "VARCHAR(90)")
+    private String id;
 
     @Column(name = "name",nullable = false)
-    private String Name;
+    private String name;
 
     @Column(name = "firstName",nullable = false)
     private String firstName;
@@ -29,7 +29,7 @@ public class User {
     private String lastName;
 
     @Column(name = "credits", nullable = false, columnDefinition = "DECIMAL(18,2)")
-    private double Credits;
+    private double credits;
 
     @Column(name = "email",nullable = false)
     private String email;
