@@ -1,20 +1,25 @@
-package org.example;
+package org.example.SignUp;
 
-import com.auth0.jwt.interfaces.Header;
-import com.google.gson.Gson;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.Enums.Methods;
 import org.example.Enums.Status;
+import org.example.Exceptions.ApiException;
+import org.example.Parser.Request;
+import org.example.Parser.Response;
+import org.example.Tokniz.JWTRSA256;
+import org.example.User.User;
+import org.example.User.UserRepository;
 import org.json.JSONObject;
-
-import java.util.HashMap;
-
+@Getter
+@Setter
 public class SignUpHandler
 { Request request;
-    Response response;
+     Response response;
     JWTRSA256 keys;
     User user;
     UserRepository userRepository=UserRepository.getInstance() ;
-    SignUpHandler(Request r,JWTRSA256 keys)
+    public SignUpHandler(Request r, JWTRSA256 keys)
     {
         this.request=r;
         this.keys=keys;
@@ -30,10 +35,10 @@ public class SignUpHandler
             //! taking the request body and convert to Map to throw to the method
 //            HashMap<String,String> payload =new Gson().fromJson(request.Body.toString(),HashMap.class);
             //!pass the user to the data base
-            try{user=SignUpService.SignUp(request.Body);
+            try{user= SignUpService.SignUp(request.Body);
             userRepository.save(user);
                 Token =keys.Genrate(user);
-                response.stauts = Status.ACCEPTED;
+                response.setStauts(Status.CREATED);
                 response.Body = new JSONObject();
                 response.Body.put("token", Token);}
             catch (ApiException ex)
@@ -54,7 +59,7 @@ public class SignUpHandler
         else {
              JSONObject Body = new JSONObject();
             Body.put("message", "Expecting GET on these EndPoint");
-            response.stauts = Status.METHOD_NOT_ALLOWED;
+            response.setStauts(Status.METHOD_NOT_ALLOWED);
             response.Body = Body;
 
         }

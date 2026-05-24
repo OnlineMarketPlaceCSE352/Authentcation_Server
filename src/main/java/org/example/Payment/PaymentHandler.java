@@ -1,19 +1,26 @@
-package org.example;
+package org.example.Payment;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.example.Enums.Methods;
 import org.example.Enums.Status;
+import org.example.Exceptions.ApiException;
+import org.example.Parser.Request;
+import org.example.Parser.Response;
+import org.example.Tokniz.JWTRSA256;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Base64;
-
+@Getter
+@Setter
 public class PaymentHandler {
     Request request;
-    Response response;
+     Response response;
     JWTRSA256 keys;
 
 
-    PaymentHandler(Request r, JWTRSA256 keys) {
+    public PaymentHandler(Request r, JWTRSA256 keys) {
         this.request = r;
         this.keys = keys;
         response = new Response();
@@ -85,7 +92,7 @@ public class PaymentHandler {
         } else {
             JSONObject Body = new JSONObject();
             Body.put("message", "Expecting GET on these EndPoint");
-            response.stauts = Status.METHOD_NOT_ALLOWED;
+            response.setStauts(Status.METHOD_NOT_ALLOWED);
             response.Body = Body;
 
         }

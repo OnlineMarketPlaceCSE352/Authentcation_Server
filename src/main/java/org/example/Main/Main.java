@@ -1,7 +1,17 @@
-package org.example;
+package org.example.Main;
 
-import org.example.UserRepository;
-import org.example.Enums.VisaRepository;
+import org.example.ChargeCredit.ChargeCreditHandler;
+import org.example.Enums.Status;
+import org.example.Login.LoginHandler;
+import org.example.Parser.Request;
+import org.example.Parser.Response;
+import org.example.Payment.PaymentHandler;
+import org.example.Profile.ProfileHandler;
+import org.example.PublicKey.PublicKeyHandler;
+import org.example.SearchUser.SearchUserHandler;
+import org.example.SignUp.SignUpHandler;
+import org.example.Tokniz.JWTRSA256;
+import org.example.Withdraw.WithdrawHandler;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -71,8 +81,8 @@ public class Main {
                     PublicKeyHandler p = new PublicKeyHandler(request, keys);
                     p.Handle();
                     System.out.println("Sending Public Key");
-                    System.out.println(p.response.ToString());
-                    OS.print(p.response.ToString());
+                    System.out.println(p.getResponse().ToString());
+                    OS.print(p.getResponse().ToString());
                     OS.flush();
                     Client.close();
                 }
@@ -80,22 +90,63 @@ public class Main {
                 else if (request.EndPoint.equals("/api/auth/register")) {
                     System.out.println("Accepted user sign Up request");
                     SignUpHandler s = new SignUpHandler(request, keys);
-                    System.out.println(s.response.ToString());
-                    OS.print(s.response.ToString());
+                    System.out.println(s.getResponse().ToString());
+                    OS.print(s.getResponse().ToString());
                     OS.flush();
                     Client.close();
                 } else if (request.EndPoint.equals("/api/auth/payment")) {
                     System.out.println("Accepted user payment request");
                     PaymentHandler py = new PaymentHandler(request, keys);
-                    System.out.println(py.response.ToString());
-                    OS.print(py.response.ToString());
+                    System.out.println(py.getResponse().ToString());
+                    OS.print(py.getResponse().ToString());
                     OS.flush();
                     Client.close();
                 } else if (request.EndPoint.equals("/api/auth/login")) {
                     System.out.println("Accepted user login");
                     LoginHandler py = new LoginHandler(request, keys);
-                    System.out.println(py.response.ToString());
-                    OS.print(py.response.ToString());
+                    System.out.println(py.getResponse().ToString());
+                    OS.print(py.getResponse().ToString());
+                    OS.flush();
+                    Client.close();
+                }
+                else if (request.EndPoint.equals("/api/auth/profile")) {
+                    System.out.println("Accepted user Profile");
+                    ProfileHandler Pf = new ProfileHandler(request, keys);
+                    System.out.println(Pf.getResponse().ToString());
+                    OS.print(Pf.getResponse().ToString());
+                    OS.flush();
+                    Client.close();
+                }
+                else if (request.EndPoint.equals("/api/auth/profile/charge")) {
+                    System.out.println("Accepted user charge");
+                    ChargeCreditHandler ch = new ChargeCreditHandler(request, keys);
+                    System.out.println(ch.getResponse().ToString());
+                    OS.print(ch.getResponse().ToString());
+                    OS.flush();
+                    Client.close();
+                }
+                else if (request.EndPoint.equals("/api/auth/profile/withdraw")) {
+                    System.out.println("Accepted user withdraw");
+                    WithdrawHandler wd = new WithdrawHandler(request, keys);
+                    System.out.println(wd.getResponse().ToString());
+                    OS.print(wd.getResponse().ToString());
+                    OS.flush();
+                    Client.close();
+                }else if (request.EndPoint.equals("/api/auth/profile/search")) {
+                    System.out.println("Accepted user search");
+                    SearchUserHandler us = new SearchUserHandler(request, keys);
+                    System.out.println(us.getResponse().ToString());
+                    OS.print(us.getResponse().ToString());
+                    OS.flush();
+                    Client.close();
+                }
+                else {
+                    System.out.println("BadEndPoint");
+
+                    Response response =new Response();
+                    response.Body.put("message","No Such GETWAY");
+                    response.setStauts(Status.BAD_GATEWAY);
+                    OS.print(response);
                     OS.flush();
                     Client.close();
                 }

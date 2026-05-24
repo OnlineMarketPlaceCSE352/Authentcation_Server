@@ -1,4 +1,4 @@
-package org.example;
+package org.example.User;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

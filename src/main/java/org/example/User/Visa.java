@@ -1,4 +1,4 @@
-package org.example;
+package org.example.User;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -27,8 +27,9 @@ public class Visa {
     YearMonth CardExpiry;
 
     @Column(name = "password")
-    int Password;
+    String Password;
 
     @Column(name = "card_carrier")
     String CardCarrier;
+
 }

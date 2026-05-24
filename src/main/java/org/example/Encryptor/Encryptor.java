@@ -1,20 +1,12 @@
-package org.example;
+package org.example.Encryptor;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableEntryException;
-import java.security.cert.CertificateException;
 import java.util.Base64;
-import java.util.UUID;
 
 public class Encryptor {
     @Getter
@@ -45,6 +37,8 @@ public class Encryptor {
     }
     public static boolean Check2Pass(String plainPassword,String hashedPassword)
     {
+        System.out.println("Plain Text: "+plainPassword);
+        System.out.println("Hashed text: "+hashedPassword);
         return BCrypt.checkpw(plainPassword+Pepper,hashedPassword);
     }
 

@@ -1,11 +1,14 @@
-package org.example;
+package org.example.SignUp;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.example.Exceptions.ApiException;
+import org.example.Encryptor.Encryptor;
 import org.example.Enums.CardType;
 import org.example.Enums.Roles;
 import org.example.Enums.Status;
+import org.example.User.User;
+import org.example.User.Visa;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -137,37 +140,36 @@ public class SignUpService {
         Visa visa = new Visa();
 
         try {
-            visa.CardNo = object.getLong("cardNumber");
+            visa.setCardNo(object.getLong("cardNumber"));
         } catch (JSONException e) {
             throw new ApiException(
                     Status.BAD_REQUEST,
                     "Missing CardNo"
             );
         }
-        if (visa.CardNo < (1e16) && visa.CardNo > (1e19)) {
+        if (visa.getCardNo() < (1e16) && visa.getCardNo() > (1e19)) {
             throw new ApiException(
                     Status.BAD_REQUEST,
                     "Invalid Card No"
             );
         }
         try {
-            visa.Cvv = Integer.parseInt(
-                    object.getString("cvv"));
+            visa.setCvv(Integer.parseInt(
+                    object.getString("cvv")));
         } catch (
                 NumberFormatException ex) {
             throw new ApiException(
                     Status.BAD_REQUEST,
                     "CVV must contain numbers only");
         }
-        if (visa.Cvv < 100 || visa.Cvv > 999) {
+        if (visa.getCvv() < 100 || visa.getCvv() > 999) {
             throw new ApiException(
                     Status.BAD_REQUEST,
                     "CVV must be 3 digits");
         }
         try {
-            visa.CardType =
-                        CardType.valueOf(
-                            object.getString("cardType"));
+            visa.setCardType(CardType.valueOf(
+                    object.getString("cardType")));
         } catch (
                 JSONException ex) {
             throw new ApiException(
@@ -182,8 +184,7 @@ public class SignUpService {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/yy");
 
 
-            visa.CardExpiry = YearMonth.parse(object.getString("mm/yy"), formatter);
-            visa.CardCarrier = object.getString("cardCarrier");
+            visa.setCardExpiry(YearMonth.parse(object.getString("mm/yy"), formatter));
 
         } catch (
                 DateTimeParseException ex) {
@@ -197,6 +198,34 @@ public class SignUpService {
                     Status.BAD_REQUEST,
                     "Missing Date");
         }
+        try {
+            visa.setCardCarrier(object.getString("cardCarrier"));
+
+        } catch (JSONException e) {
+            throw new ApiException(
+                    Status.BAD_REQUEST,
+                    "Missing cardCarrier"
+            );
+        }try {
+            String password=object.getString("cardConfirm");
+           if(!password.matches("^\\d{4}(\\d{2})?$"))
+            {
+                       throw new ApiException(
+                    Status.BAD_REQUEST,
+                    "Bad cardConfirm formate"
+            );
+            }
+           Encryptor hashed =new Encryptor(password);
+                    visa.setPassword(hashed.getHashed() );
+
+        } catch (JSONException e) {
+            throw new ApiException(
+                    Status.BAD_REQUEST,
+                    "Missing cardConfirm"
+            );
+        }
+
+
         return visa;
 
     }

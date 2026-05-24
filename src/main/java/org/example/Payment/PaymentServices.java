@@ -1,6 +1,8 @@
-package org.example;
+package org.example.Payment;
 
+import org.example.Exceptions.ApiException;
 import org.example.Enums.Status;
+import org.example.User.UserRepository;
 
 public class PaymentServices {
    static UserRepository userRepository = UserRepository.getInstance();

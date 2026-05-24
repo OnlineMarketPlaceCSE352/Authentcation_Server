@@ -1,10 +1,10 @@
-package org.example;
+package org.example.User;
 
 
+import org.example.Exceptions.ApiException;
 import org.example.Enums.HibernateUtil;
 import org.example.Enums.Roles;
 import org.example.Enums.Status;
-import org.example.User;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -93,11 +93,30 @@ public class UserRepository {
 
     public List<User> searchByName(String keyword) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            return session.createQuery("FROM User WHERE firstName LIKE :kw OR lastName LIKE :kw", User.class)
+           return session.createQuery(
+                            """
+                            FROM User
+                            WHERE LOWER(CONCAT(firstName, ' ', lastName))
+                            LIKE LOWER(:kw)
+                            """,
+                            User.class
+                    )
                     .setParameter("kw", "%" + keyword + "%")
                     .list();
         }
     }
+    //Search by full name
+    public List<User> searchByFullName(String keyword) {
+
+    String wk = keyword.substring(0, keyword.indexOf(" "));
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            return session.createQuery("FROM User WHERE name LIKE :kw OR firsName LIKE :wk", User.class)
+                    .setParameter("kw", "%" + keyword + "%")
+                    .setParameter("wk", "%" + wk + "%")
+                    .list();
+        }
+    }
+
 
     public List<User> findAll() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {

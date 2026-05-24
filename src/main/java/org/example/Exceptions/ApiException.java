@@ -1,9 +1,7 @@
-package org.example;
+package org.example.Exceptions;
 
 import lombok.Getter;
 import org.example.Enums.Status;
-
-import java.security.MessageDigest;
 
 public class ApiException extends RuntimeException {
     @Getter

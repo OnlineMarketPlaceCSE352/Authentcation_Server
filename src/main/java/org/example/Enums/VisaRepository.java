@@ -1,10 +1,8 @@
 package org.example.Enums;
 
-import org.example.Enums.CardType;
-import org.example.Visa;
+import org.example.User.Visa;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.example.Enums.HibernateUtil;
 
 import java.time.YearMonth;
 import java.util.List;

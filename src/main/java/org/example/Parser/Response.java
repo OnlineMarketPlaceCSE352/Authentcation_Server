@@ -1,20 +1,17 @@
-package org.example;
+package org.example.Parser;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.example.Enums.Methods;
 import org.example.Enums.Status;
 import org.json.JSONObject;
-
-import java.nio.MappedByteBuffer;
 
 @Getter
 @Setter
 public class Response {
     Status stauts;
     JSONObject Header;
-    JSONObject Body;
-    Response()
+    public JSONObject Body;
+    public Response()
     {
         Header =new JSONObject();
         Body =new JSONObject();
@@ -41,6 +38,7 @@ public class Response {
         response.append("\r\n");
         if(Body!=null)
             response.append(Body.toString(4));
+        response.append("\r\n");
         return response.toString();
     }
 

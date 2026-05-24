@@ -1,13 +1,17 @@
-package org.example;
+package org.example.Tokniz;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTCreator.Builder;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.Getter;
+import org.example.Exceptions.ApiException;
 import org.example.Enums.Status;
+import org.example.Parser.Request;
+import org.example.User.User;
 import org.json.JSONException;
 
 import java.io.FileInputStream;
@@ -29,7 +33,7 @@ public class JWTRSA256 {
     private RSAPublicKey publicKey;
     private RSAPrivateKey privateKey;
 
-    JWTRSA256() {
+    public JWTRSA256() {
         KeyStore ks = null;
         try {
             ks = KeyStore.getInstance("PKCS12");
@@ -49,6 +53,10 @@ public class JWTRSA256 {
     public static void Authencator(Request request, String publicKey) {
 
         /* Verification of JWT */
+        System.out.println("PublicKey: "+publicKey);
+        System.out.println("Token: "+request.getHeader().get("token"));
+
+
         try {
             String token = request.getHeader().getString("token");
             /// refine the publickey
@@ -68,7 +76,11 @@ public class JWTRSA256 {
                     .build(); //Reusable verifier instance
             DecodedJWT jwt = verifier.verify(token);
 
-        } catch (InvalidKeySpecException | NoSuchAlgorithmException | JWTVerificationException e) {
+
+        }catch(TokenExpiredException ex){
+            throw new ApiException(Status.GATEWAY_TIMEOUT, "Token has expired");
+        }
+        catch (InvalidKeySpecException | NoSuchAlgorithmException | JWTVerificationException e) {
 
             throw new ApiException(Status.UNAUTHORIZED, "Token is Manipulated");
         } catch (JSONException ex) {

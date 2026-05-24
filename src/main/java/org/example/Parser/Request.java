@@ -1,4 +1,4 @@
-package org.example;
+package org.example.Parser;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.Enums.Methods;
@@ -12,7 +12,7 @@ public class Request {
    public String EndPoint;
    public JSONObject Header;
 
-    Request(String s) {
+    public Request(String s) {
         Request = s;
         RequestParser();
 
@@ -66,14 +66,21 @@ public class Request {
     }
     catch (StringIndexOutOfBoundsException ex)
     {
-        int Startindex = Request.indexOf("\n");
-        int Lastindex = Request.indexOf("\n\n");
-        String header = Request.substring(Startindex + 1, Lastindex +1);
-        String[] headers = header.split("\n");
-        Header = new JSONObject();
-        for (String s : headers) {
-            Header.put(s.substring(0, s.indexOf(":")), s.substring(s.indexOf(" ") + 1));
+        try {
+            int Startindex = Request.indexOf("\n");
+            int Lastindex = Request.indexOf("\n\n");
+            String header = Request.substring(Startindex + 1, Lastindex + 1);
+            String[] headers = header.split("\n");
+            Header = new JSONObject();
+            for (String s : headers) {
+                Header.put(s.substring(0, s.indexOf(":")), s.substring(s.indexOf(" ") + 1));
+            }
         }
+            catch(StringIndexOutOfBoundsException ee)
+            {
+                Header=null;
+            }
+
     }
 
 
