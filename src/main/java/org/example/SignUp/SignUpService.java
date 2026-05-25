@@ -102,6 +102,7 @@ public class SignUpService {
     }
     private static String parseEmail(JSONObject object) throws ApiException {
        String e;
+
         try {
             e = object.optString("email");
         } catch (JSONException ex) {

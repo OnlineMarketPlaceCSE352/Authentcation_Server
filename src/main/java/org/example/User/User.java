@@ -31,7 +31,7 @@ public class User {
     @Column(name = "credits", nullable = false, columnDefinition = "DECIMAL(18,2)")
     private double credits;
 
-    @Column(name = "email",nullable = false)
+    @Column(name = "email",nullable = false,unique = true)
     private String email;
 
     @Column(name = "password",nullable = false)

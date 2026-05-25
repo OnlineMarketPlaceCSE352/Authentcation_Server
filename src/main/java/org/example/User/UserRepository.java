@@ -30,7 +30,7 @@ public class UserRepository {
             tx.commit();
         } catch (Exception e) {
             if (tx != null) tx.rollback();
-            throw new ApiException(Status.INTERNAL_SERVER_ERROR,"Failed to save user");
+            throw new ApiException(Status.BAD_REQUEST,"Failed to save user Email is used");
         }
     }
 

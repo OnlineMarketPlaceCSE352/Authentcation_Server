@@ -50,7 +50,7 @@ public class PaymentHandler {
                     userId = obj.getString("id");
 
                 try{
-                    sellerId =request.getBody().getString("userId");
+                    sellerId =request.getBody().getString("userID");
 
                 }
 

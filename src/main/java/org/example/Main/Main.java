@@ -1,6 +1,7 @@
 package org.example.Main;
 
 import org.example.ChargeCredit.ChargeCreditHandler;
+import org.example.DeleteUser.DeleteUserHandler;
 import org.example.Enums.Status;
 import org.example.Login.LoginHandler;
 import org.example.Parser.Request;
@@ -155,6 +156,13 @@ public class Main {
             } else if (request.EndPoint.equals("/api/auth/profile/search")) {
                 System.out.println("Accepted user search");
                 SearchUserHandler us = new SearchUserHandler(request, keys);
+                System.out.println(us.getResponse().ToString());
+                OS.print(us.getResponse().ToString());
+                OS.flush();
+                Client.close();
+            }else if (request.EndPoint.equals("/api/auth/profile/delete")) {
+                System.out.println("Accepted Admin Delete");
+                DeleteUserHandler us = new DeleteUserHandler(request, keys);
                 System.out.println(us.getResponse().ToString());
                 OS.print(us.getResponse().ToString());
                 OS.flush();

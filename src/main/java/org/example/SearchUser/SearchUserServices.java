@@ -21,6 +21,7 @@ public class SearchUserServices {
                         new JSONObject();
                 userObject.put("name", u.getName());
                 userObject.put("email", u.getEmail());
+                userObject.put("id", u.getId());
                 userObject.put("address", u.getAddress());
                 userObject.put("phoneNumber", u.getPhoneNumber());
                 userObject.put("newBalance", u.getCredits());
