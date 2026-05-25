@@ -22,7 +22,7 @@ public class UserRepository {
 
     private UserRepository() {}
 
-    public void save(User user) {
+    public synchronized void save(User user) {
         Transaction tx = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             tx = session.beginTransaction();
@@ -34,7 +34,7 @@ public class UserRepository {
         }
     }
 
-    public void delete(String id) {
+    public synchronized void delete(String id) {
         Transaction tx = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             tx = session.beginTransaction();
@@ -47,7 +47,7 @@ public class UserRepository {
         }
     }
 
-    public void update(User user) {
+    public synchronized void update(User user) {
         Transaction tx = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             tx = session.beginTransaction();
@@ -59,7 +59,7 @@ public class UserRepository {
         }
     }
 
-    public Optional<User> findByEmail(String email) {
+    public synchronized Optional<User> findByEmail(String email) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             User user = session.createQuery("FROM User WHERE email = :email", User.class)
                     .setParameter("email", email)
@@ -68,13 +68,13 @@ public class UserRepository {
         }
     }
 
-    public Optional<User> findById(String id) {
+    public synchronized Optional<User> findById(String id) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             return Optional.ofNullable(session.get(User.class, id));
         }
     }
 
-    public Optional<User> findUserByCardNo(long cardNo) {
+    public synchronized Optional<User> findUserByCardNo(long cardNo) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             User user = session.createQuery("FROM User u WHERE u.visa.cardNo = :cardNo", User.class)
                     .setParameter("cardNo", cardNo)
@@ -83,7 +83,7 @@ public class UserRepository {
         }
     }
 
-    public List<User> findByRole(Roles role) {
+    public synchronized List<User> findByRole(Roles role) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             return session.createQuery("FROM User WHERE role = :role", User.class)
                     .setParameter("role", role)
@@ -91,7 +91,7 @@ public class UserRepository {
         }
     }
 
-    public List<User> searchByName(String keyword) {
+    public synchronized List<User> searchByName(String keyword) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
            return session.createQuery(
                             """
@@ -106,7 +106,7 @@ public class UserRepository {
         }
     }
     //Search by full name
-    public List<User> searchByFullName(String keyword) {
+    public synchronized List<User> searchByFullName(String keyword) {
 
     String wk = keyword.substring(0, keyword.indexOf(" "));
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -118,13 +118,13 @@ public class UserRepository {
     }
 
 
-    public List<User> findAll() {
+    public synchronized List<User> findAll() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             return session.createQuery("FROM User", User.class).list();
         }
     }
 
-    public boolean existsByEmail(String email) {
+    public synchronized boolean existsByEmail(String email) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Long count = session.createQuery("SELECT COUNT(*) FROM User WHERE email = :email", Long.class)
                     .setParameter("email", email)
@@ -133,7 +133,7 @@ public class UserRepository {
         }
     }
 
-    public Optional<Double> getCreditsById(String userId) {
+    public synchronized Optional<Double> getCreditsById(String userId) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Double credits = session.createQuery("SELECT credits FROM User WHERE id = :id", Double.class)
                     .setParameter("id", userId)
@@ -142,7 +142,7 @@ public class UserRepository {
         }
     }
 
-    public void updateCredits(String userId, double amount) {
+    public synchronized void updateCredits(String userId, double amount) {
         Transaction tx = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             tx = session.beginTransaction();

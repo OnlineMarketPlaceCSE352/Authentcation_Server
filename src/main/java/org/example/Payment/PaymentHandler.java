@@ -75,9 +75,9 @@ public class PaymentHandler {
                 }
 
 
-               double c= PaymentServices.Payment(sellerId,userId,amount);
+               org.json.JSONObject json  = PaymentServices.Payment(sellerId,userId,amount);
                 response.setStauts(Status.ACCEPTED);
-                response.Body.put("credit",c);
+                response.setBody(json);
 
             } catch (ApiException ex) {
                 response.setStauts(ex.getStatus());
